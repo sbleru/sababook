@@ -244,14 +244,14 @@ impl QualifiedRule {
     }
 }
 
-/// https://www.w3.org/TR/selectors-3/#selectors
+/// https://www.w3.org/TR/selectors-4/
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Selector {
-    /// https://www.w3.org/TR/selectors-3/#type-selectors
+    /// https://www.w3.org/TR/selectors-4/#type-selectors
     TypeSelector(String),
-    /// https://www.w3.org/TR/selectors-3/#class-html
+    /// https://www.w3.org/TR/selectors-4/#class-html
     ClassSelector(String),
-    /// https://www.w3.org/TR/selectors-3/#id-selectors
+    /// https://www.w3.org/TR/selectors-4/#id-selectors
     IdSelector(String),
     /// パース中にエラーが起こったときに使用されるセレクタ
     UnknownSelector,
