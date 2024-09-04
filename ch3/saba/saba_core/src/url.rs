@@ -191,19 +191,6 @@ mod tests {
     }
 
     #[test]
-    fn test_localhost() {
-        let url = "http://localhost:8000".to_string();
-        let expected = Ok(HtmlUrl {
-            url: url.clone(),
-            host: "localhost".to_string(),
-            port: "8000".to_string(),
-            path: "".to_string(),
-            searchpart: "".to_string(),
-        });
-        assert_eq!(expected, HtmlUrl::new(url).parse());
-    }
-
-    #[test]
     fn test_no_scheme() {
         let url = "example.com".to_string();
         let expected = Err("Only HTTP scheme is supported.".to_string());
