@@ -121,25 +121,22 @@ impl LayoutView {
     }
 
     fn calculate_node_size(node: &Option<Rc<RefCell<LayoutObject>>>, parent_size: LayoutSize) {
-        match node {
-            Some(n) => {
-                // ノードがブロック要素の場合、子ノードのレイアウトを計算する前に横幅を決める
-                if n.borrow().kind() == LayoutObjectKind::Block {
-                    n.borrow_mut().compute_size(parent_size); // (d1)
-                }
-
-                let first_child = n.borrow().first_child();
-                Self::calculate_node_size(&first_child, n.borrow().size());
-
-                let next_sibling = n.borrow().next_sibling();
-                Self::calculate_node_size(&next_sibling, parent_size);
-
-                // 子ノードのサイズが決まった後にサイズを計算する。
-                // ブロック要素のとき、高さは子ノードの高さに依存する
-                // インライン要素のとき、高さも横幅も子ノードに依存する
-                n.borrow_mut().compute_size(parent_size); // (d2)
+        if let Some(n) = node {
+            // ノードがブロック要素の場合、子ノードのレイアウトを計算する前に横幅を決める
+            if n.borrow().kind() == LayoutObjectKind::Block {
+                n.borrow_mut().compute_size(parent_size);
             }
-            None => (),
+
+            let first_child = n.borrow().first_child();
+            Self::calculate_node_size(&first_child, n.borrow().size());
+
+            let next_sibling = n.borrow().next_sibling();
+            Self::calculate_node_size(&next_sibling, parent_size);
+
+            // 子ノードのサイズが決まった後にサイズを計算する。
+            // ブロック要素のとき、高さは子ノードの高さに依存する
+            // インライン要素のとき、高さも横幅も子ノードに依存する
+            n.borrow_mut().compute_size(parent_size);
         }
     }
 
@@ -150,34 +147,33 @@ impl LayoutView {
         previous_sibiling_point: Option<LayoutPoint>,
         previous_sibiling_size: Option<LayoutSize>,
     ) {
-        match node {
-            Some(n) => {
-                n.borrow_mut().compute_position(
-                    parent_point,
-                    previous_sibiling_kind,
-                    previous_sibiling_point,
-                    previous_sibiling_size,
-                );
+        if let Some(n) = node {
+            n.borrow_mut().compute_position(
+                parent_point,
+                previous_sibiling_kind,
+                previous_sibiling_point,
+                previous_sibiling_size,
+            );
 
-                let first_child = n.borrow().first_child();
-                Self::calculate_node_position(
-                    &first_child,
-                    n.borrow().point(),
-                    previous_sibiling_kind,
-                    previous_sibiling_point,
-                    previous_sibiling_size,
-                );
+            // ノード（node）の子ノードの位置を計算をする
+            let first_child = n.borrow().first_child();
+            Self::calculate_node_position(
+                &first_child,
+                n.borrow().point(),
+                LayoutObjectKind::Block,
+                None,
+                None,
+            );
 
-                let next_sibling = n.borrow().next_sibling();
-                Self::calculate_node_position(
-                    &next_sibling,
-                    parent_point,
-                    n.borrow().kind(),
-                    Some(n.borrow().point()),
-                    Some(n.borrow().size()),
-                );
-            }
-            None => (),
+            // ノード（node）の兄弟ノードの位置を計算する
+            let next_sibling = n.borrow().next_sibling();
+            Self::calculate_node_position(
+                &next_sibling,
+                parent_point,
+                n.borrow().kind(),
+                Some(n.borrow().point()),
+                Some(n.borrow().size()),
+            );
         }
     }
 

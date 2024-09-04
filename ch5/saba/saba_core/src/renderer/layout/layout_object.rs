@@ -16,6 +16,7 @@ use crate::renderer::layout::computed_style::ComputedStyle;
 use crate::renderer::layout::computed_style::DisplayType;
 use crate::renderer::layout::computed_style::FontSize;
 use alloc::rc::Rc;
+use alloc::rc::Weak;
 use alloc::string::String;
 use alloc::vec;
 use alloc::vec::Vec;
@@ -51,38 +52,37 @@ pub fn create_layout_object(
     parent_obj: &Option<Rc<RefCell<LayoutObject>>>,
     cssom: &StyleSheet,
 ) -> Option<Rc<RefCell<LayoutObject>>> {
-    match node {
-        Some(n) => {
-            let layout_object = Rc::new(RefCell::new(LayoutObject::new(n.clone())));
+    if let Some(n) = node {
+        // LayoutObjectを作成する
+        let layout_object = Rc::new(RefCell::new(LayoutObject::new(n.clone(), parent_obj)));
 
-            // CSSのルールをセレクタで選択されたノードに適用する
-            for rule in &cssom.rules {
-                if layout_object.borrow().is_node_selected(&rule.selector) {
-                    layout_object
-                        .borrow_mut()
-                        .cascading_style(rule.declarations.clone());
-                }
+        // CSSのルールをセレクタで選択されたノードに適用する
+        for rule in &cssom.rules {
+            if layout_object.borrow().is_node_selected(&rule.selector) {
+                layout_object
+                    .borrow_mut()
+                    .cascading_style(rule.declarations.clone());
             }
-
-            // CSSでスタイルが指定されていない場合、デフォルトの値または親のノードから継承した値を使用する
-            let parent_style = if let Some(parent) = parent_obj {
-                Some(parent.borrow().style())
-            } else {
-                None
-            };
-            layout_object.borrow_mut().defaulting_style(n, parent_style);
-
-            // displayプロパティがnoneの場合、ノードを作成しない
-            if layout_object.borrow().style().display() == DisplayType::DisplayNone {
-                return None;
-            }
-
-            // displayプロパティの最終的な値を使用してノードの種類を決定する
-            layout_object.borrow_mut().update_kind();
-            Some(layout_object)
         }
-        None => None,
+
+        // CSSでスタイルが指定されていない場合、デフォルトの値または親のノードから継承した値を使用する
+        let parent_style = if let Some(parent) = parent_obj {
+            Some(parent.borrow().style())
+        } else {
+            None
+        };
+        layout_object.borrow_mut().defaulting_style(n, parent_style);
+
+        // displayプロパティがnoneの場合、ノードを作成しない
+        if layout_object.borrow().style().display() == DisplayType::DisplayNone {
+            return None;
+        }
+
+        // displayプロパティの最終的な値を使用してノードの種類を決定する
+        layout_object.borrow_mut().update_kind();
+        return Some(layout_object);
     }
+    None
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
@@ -98,6 +98,7 @@ pub struct LayoutObject {
     node: Rc<RefCell<Node>>,
     pub first_child: Option<Rc<RefCell<LayoutObject>>>,
     pub next_sibling: Option<Rc<RefCell<LayoutObject>>>,
+    parent: Weak<RefCell<LayoutObject>>,
     style: ComputedStyle,
     point: LayoutPoint,
     size: LayoutSize,
@@ -110,12 +111,18 @@ impl PartialEq for LayoutObject {
 }
 
 impl LayoutObject {
-    pub fn new(node: Rc<RefCell<Node>>) -> Self {
+    pub fn new(node: Rc<RefCell<Node>>, parent_obj: &Option<Rc<RefCell<LayoutObject>>>) -> Self {
+        let parent = match parent_obj {
+            Some(p) => Rc::downgrade(p),
+            None => Weak::new(),
+        };
+
         Self {
             kind: LayoutObjectKind::Block,
             node: node.clone(),
             first_child: None,
             next_sibling: None,
+            parent,
             style: ComputedStyle::new(),
             point: LayoutPoint::new(0, 0),
             size: LayoutSize::new(0, 0),
@@ -427,6 +434,10 @@ impl LayoutObject {
 
     pub fn next_sibling(&self) -> Option<Rc<RefCell<LayoutObject>>> {
         self.next_sibling.as_ref().cloned()
+    }
+
+    pub fn parent(&self) -> Weak<RefCell<Self>> {
+        self.parent.clone()
     }
 
     pub fn style(&self) -> ComputedStyle {
