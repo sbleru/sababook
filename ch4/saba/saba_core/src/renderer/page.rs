@@ -30,7 +30,7 @@ impl Page {
     pub fn receive_response(&mut self, response: HttpResponse) -> String {
         self.create_frame(response.body());
 
-        // デバッグ用にDOMツリーを文字列として返す。
+        // デバッグ用にDOMツリーを文字列として返す
         if let Some(frame) = &self.frame {
             let dom = frame.borrow().document().clone();
             let debug = convert_dom_to_string(&Some(dom));
