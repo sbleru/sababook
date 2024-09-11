@@ -75,12 +75,15 @@ impl WasabiUI {
         handle_url: fn(String) -> Result<HttpResponse, Error>,
     ) -> Result<(), Error> {
         loop {
-            self.handle_mouse_input()?;
+            self.handle_mouse_input(handle_url)?;
             self.handle_key_input(handle_url)?;
         }
     }
 
-    fn handle_mouse_input(&mut self) -> Result<(), Error> {
+    fn handle_mouse_input(
+        &mut self,
+        handle_url: fn(String) -> Result<HttpResponse, Error>,
+    ) -> Result<(), Error> {
         if let Some(MouseEvent { button, position }) = Api::get_mouse_cursor_info() {
             self.window.flush_area(self.cursor.rect());
             self.cursor.set_position(position.x, position.y);
@@ -117,6 +120,19 @@ impl WasabiUI {
                 }
 
                 self.input_mode = InputMode::Normal;
+
+                let position_in_content_area = (
+                    relative_pos.0,
+                    relative_pos.1 - TITLE_BAR_HEIGHT - TOOLBAR_HEIGHT,
+                );
+                let page = self.browser.borrow().current_page();
+                let next_destination = page.borrow_mut().clicked(position_in_content_area);
+
+                if let Some(url) = next_destination {
+                    self.input_url = url.clone();
+                    self.update_address_bar()?;
+                    self.start_navigation(handle_url, url)?;
+                }
             }
         }
 
@@ -136,7 +152,7 @@ impl WasabiUI {
                 if let Some(c) = Api::read_key() {
                     if c == 0x0A as char {
                         // エンターキーが押されたので、ナビゲーションを開始する
-                        let _ = self.start_navigation(handle_url, self.input_url.clone());
+                        self.start_navigation(handle_url, self.input_url.clone())?;
 
                         self.input_url = String::new();
                         self.input_mode = InputMode::Normal;
@@ -207,8 +223,24 @@ impl WasabiUI {
                         return Err(Error::InvalidUI("failed to draw a string".to_string()));
                     }
                 }
-                _ => {
-                    // 他の要素の描画
+                DisplayItem::Rect {
+                    style,
+                    layout_point,
+                    layout_size,
+                } => {
+                    if self
+                        .window
+                        .fill_rect(
+                            style.background_color().code_u32(),
+                            layout_point.x() + WINDOW_PADDING,
+                            layout_point.y() + WINDOW_PADDING + TOOLBAR_HEIGHT,
+                            layout_size.width(),
+                            layout_size.height(),
+                        )
+                        .is_err()
+                    {
+                        return Err(Error::InvalidUI("failed to draw a string".to_string()));
+                    }
                 }
             }
         }

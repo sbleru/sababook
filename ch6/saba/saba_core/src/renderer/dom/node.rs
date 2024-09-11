@@ -173,6 +173,15 @@ impl Element {
         self.attributes.clone()
     }
 
+    pub fn get_attribute(&self, name: &str) -> Option<String> {
+        for attr in &self.attributes {
+            if attr.name() == name {
+                return Some(attr.value());
+            }
+        }
+        None
+    }
+
     pub fn is_block_element(&self) -> bool {
         match self.kind {
             ElementKind::Body | ElementKind::H1 | ElementKind::H2 | ElementKind::P => true,
