@@ -1,7 +1,7 @@
 extern crate alloc;
-use crate::http::alloc::string::ToString;
 use alloc::format;
 use alloc::string::String;
+use alloc::string::ToString;
 use alloc::vec::Vec;
 use noli::net::lookup_host;
 use noli::net::SocketAddr;

@@ -5,7 +5,7 @@ extern crate alloc;
 
 use crate::alloc::string::ToString;
 use net_wasabi::http::HttpClient;
-use noli::*;
+use noli::prelude::*;
 
 fn main() -> u64 {
     let client = HttpClient::new();
