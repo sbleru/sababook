@@ -96,8 +96,8 @@ pub enum LayoutObjectKind {
 pub struct LayoutObject {
     kind: LayoutObjectKind,
     node: Rc<RefCell<Node>>,
-    pub first_child: Option<Rc<RefCell<LayoutObject>>>,
-    pub next_sibling: Option<Rc<RefCell<LayoutObject>>>,
+    first_child: Option<Rc<RefCell<LayoutObject>>>,
+    next_sibling: Option<Rc<RefCell<LayoutObject>>>,
     parent: Weak<RefCell<LayoutObject>>,
     style: ComputedStyle,
     point: LayoutPoint,
@@ -289,10 +289,11 @@ impl LayoutObject {
             (LayoutObjectKind::Inline, LayoutObjectKind::Inline) => {
                 if let (Some(size), Some(pos)) = (previous_sibiling_size, previous_sibiling_point) {
                     point.set_x(pos.x() + size.width());
+                    point.set_y(pos.y());
                 } else {
                     point.set_x(parent_point.x());
+                    point.set_y(parent_point.y());
                 }
-                point.set_y(parent_point.y());
             }
             _ => {
                 point.set_x(parent_point.x());
