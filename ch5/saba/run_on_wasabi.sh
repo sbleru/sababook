@@ -24,12 +24,12 @@ then
   echo $OS_PATH" exists"
   echo "pulling new changes..."
   cd $OS_PATH
-  git pull
+  git pull origin for_saba
 else
   echo $OS_PATH" doesn't exist"
   echo "cloning wasabi project..."
   cd $TARGET_PATH
-  git clone git@github.com:hikalium/wasabi.git
+  git clone --branch for_saba git@github.com:hikalium/wasabi.git
 fi
 
 # アプリケーションのトップディレクトリに移動する
