@@ -11,3 +11,5 @@
 - [ch5/](./ch5/saba) — 『第５章　CSSで装飾する』
 - [ch6/](./ch6/saba) — 『第６章　GUIを実装する』
 - [ch7/](./ch7/saba) — 『第７章　JavaScriptを動かす』
+
+もしプログラム中に問題を見つけた場合は、[Issues](https://github.com/d0iasm/sababook/issues)に報告をいただけると嬉しいです。
