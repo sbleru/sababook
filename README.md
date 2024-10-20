@@ -12,4 +12,6 @@
 - [ch6/](./ch6/saba) — 『第６章　GUIを実装する』
 - [ch7/](./ch7/saba) — 『第７章　JavaScriptを動かす』
 
+書籍で解説されていない実験的なコードや最新の変更は[saba](https://github.com/d0iasm/saba)リポジトリに存在します。
+
 もしプログラム中に問題を見つけた場合は、[Issues](https://github.com/d0iasm/sababook/issues)に報告をいただけると嬉しいです。
