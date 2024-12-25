@@ -178,16 +178,16 @@ impl LayoutView {
     fn calculate_node_position(
         node: &Option<Rc<RefCell<LayoutObject>>>,
         parent_point: LayoutPoint,
-        previous_sibiling_kind: LayoutObjectKind,
-        previous_sibiling_point: Option<LayoutPoint>,
-        previous_sibiling_size: Option<LayoutSize>,
+        previous_sibling_kind: LayoutObjectKind,
+        previous_sibling_point: Option<LayoutPoint>,
+        previous_sibling_size: Option<LayoutSize>,
     ) {
         if let Some(n) = node {
             n.borrow_mut().compute_position(
                 parent_point,
-                previous_sibiling_kind,
-                previous_sibiling_point,
-                previous_sibiling_size,
+                previous_sibling_kind,
+                previous_sibling_point,
+                previous_sibling_size,
             );
 
             // ノード（node）の子ノードの位置を計算をする
