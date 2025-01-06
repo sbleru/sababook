@@ -64,7 +64,10 @@ impl JsLexer {
                 return result;
             }
 
-            if self.input[self.pos].is_ascii_alphanumeric() || self.input[self.pos] == '$' {
+            if self.input[self.pos].is_ascii_alphanumeric()
+                || self.input[self.pos] == '_'
+                || self.input[self.pos] == '$'
+            {
                 result.push(self.input[self.pos]);
                 self.pos += 1;
             } else {
