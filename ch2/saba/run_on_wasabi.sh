@@ -38,7 +38,8 @@ cd $HOME_PATH
 # Makefileをダウンロードする
 if [ ! -f $MAKEFILE_PATH ]; then
   echo "downloading Makefile..."
-  wget https://raw.githubusercontent.com/hikalium/wasabi/for_saba/external_app_template/Makefile
+  # wget https://raw.githubusercontent.com/hikalium/wasabi/for_saba/external_app_template/Makefile
+  curl -O https://raw.githubusercontent.com/hikalium/wasabi/for_saba/external_app_template/Makefile
 fi
 
 make build
