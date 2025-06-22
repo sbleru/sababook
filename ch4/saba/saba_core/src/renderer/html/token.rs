@@ -619,4 +619,281 @@ mod tests {
             assert_eq!(Some(e), tokenizer.next());
         }
     }
+
+    // main.rsで使用されるhtmlのテスト
+    #[test]
+    fn test_complete_html_document() {
+        let html = r#"<html>
+<head></head>
+<body>
+  <h1 id="title">H1 title</h1>
+  <h2 class="class">H2 title</h2>
+  <p>Test text.</p>
+  <p>
+    <a href="example.com">Link1</a>
+    <a href="example.com">Link2</a>
+  </p>
+</body>
+</html>"#.to_string();
+        let mut tokenizer = HtmlTokenizer::new(html);
+        
+        // id属性の設定
+        let mut id_attr = Attribute::new();
+        id_attr.add_char('i', true);
+        id_attr.add_char('d', true);
+        id_attr.add_char('t', false);
+        id_attr.add_char('i', false);
+        id_attr.add_char('t', false);
+        id_attr.add_char('l', false);
+        id_attr.add_char('e', false);
+
+        // class属性の設定
+        let mut class_attr = Attribute::new();
+        class_attr.add_char('c', true);
+        class_attr.add_char('l', true);
+        class_attr.add_char('a', true);
+        class_attr.add_char('s', true);
+        class_attr.add_char('s', true);
+        class_attr.add_char('c', false);
+        class_attr.add_char('l', false);
+        class_attr.add_char('a', false);
+        class_attr.add_char('s', false);
+        class_attr.add_char('s', false);
+
+        // href属性の設定
+        let mut href_attr1 = Attribute::new();
+        href_attr1.add_char('h', true);
+        href_attr1.add_char('r', true);
+        href_attr1.add_char('e', true);
+        href_attr1.add_char('f', true);
+        href_attr1.add_char('e', false);
+        href_attr1.add_char('x', false);
+        href_attr1.add_char('a', false);
+        href_attr1.add_char('m', false);
+        href_attr1.add_char('p', false);
+        href_attr1.add_char('l', false);
+        href_attr1.add_char('e', false);
+        href_attr1.add_char('.', false);
+        href_attr1.add_char('c', false);
+        href_attr1.add_char('o', false);
+        href_attr1.add_char('m', false);
+
+        let mut href_attr2 = Attribute::new();
+        href_attr2.add_char('h', true);
+        href_attr2.add_char('r', true);
+        href_attr2.add_char('e', true);
+        href_attr2.add_char('f', true);
+        href_attr2.add_char('e', false);
+        href_attr2.add_char('x', false);
+        href_attr2.add_char('a', false);
+        href_attr2.add_char('m', false);
+        href_attr2.add_char('p', false);
+        href_attr2.add_char('l', false);
+        href_attr2.add_char('e', false);
+        href_attr2.add_char('.', false);
+        href_attr2.add_char('c', false);
+        href_attr2.add_char('o', false);
+        href_attr2.add_char('m', false);
+
+        // 期待されるトークンの配列
+        let expected_tokens = vec![
+            // <html>
+            HtmlToken::StartTag {
+                tag: "html".to_string(),
+                self_closing: false,
+                attributes: Vec::new(),
+            },
+            HtmlToken::Char('\n'),
+            // <head></head>
+            HtmlToken::StartTag {
+                tag: "head".to_string(),
+                self_closing: false,
+                attributes: Vec::new(),
+            },
+            HtmlToken::EndTag {
+                tag: "head".to_string(),
+            },
+            HtmlToken::Char('\n'),
+            // <body>
+            HtmlToken::StartTag {
+                tag: "body".to_string(),
+                self_closing: false,
+                attributes: Vec::new(),
+            },
+            HtmlToken::Char('\n'),
+            HtmlToken::Char(' '),
+            HtmlToken::Char(' '),
+            // <h1 id="title">H1 title</h1>
+            HtmlToken::StartTag {
+                tag: "h1".to_string(),
+                self_closing: false,
+                attributes: vec![id_attr],
+            },
+            HtmlToken::Char('H'), HtmlToken::Char('1'), HtmlToken::Char(' '),
+            HtmlToken::Char('t'), HtmlToken::Char('i'), HtmlToken::Char('t'),
+            HtmlToken::Char('l'), HtmlToken::Char('e'),
+            HtmlToken::EndTag {
+                tag: "h1".to_string(),
+            },
+            HtmlToken::Char('\n'),
+            HtmlToken::Char(' '),
+            HtmlToken::Char(' '),
+            // <h2 class="class">H2 title</h2>
+            HtmlToken::StartTag {
+                tag: "h2".to_string(),
+                self_closing: false,
+                attributes: vec![class_attr],
+            },
+            HtmlToken::Char('H'), HtmlToken::Char('2'), HtmlToken::Char(' '),
+            HtmlToken::Char('t'), HtmlToken::Char('i'), HtmlToken::Char('t'),
+            HtmlToken::Char('l'), HtmlToken::Char('e'),
+            HtmlToken::EndTag {
+                tag: "h2".to_string(),
+            },
+            HtmlToken::Char('\n'),
+            HtmlToken::Char(' '),
+            HtmlToken::Char(' '),
+            // <p>Test text.</p>
+            HtmlToken::StartTag {
+                tag: "p".to_string(),
+                self_closing: false,
+                attributes: Vec::new(),
+            },
+            HtmlToken::Char('T'), HtmlToken::Char('e'), HtmlToken::Char('s'),
+            HtmlToken::Char('t'), HtmlToken::Char(' '), HtmlToken::Char('t'),
+            HtmlToken::Char('e'), HtmlToken::Char('x'), HtmlToken::Char('t'),
+            HtmlToken::Char('.'),
+            HtmlToken::EndTag {
+                tag: "p".to_string(),
+            },
+            HtmlToken::Char('\n'),
+            HtmlToken::Char(' '),
+            HtmlToken::Char(' '),
+            // <p>
+            HtmlToken::StartTag {
+                tag: "p".to_string(),
+                self_closing: false,
+                attributes: Vec::new(),
+            },
+            HtmlToken::Char('\n'),
+            HtmlToken::Char(' '),
+            HtmlToken::Char(' '),
+            HtmlToken::Char(' '),
+            HtmlToken::Char(' '),
+            // <a href="example.com">Link1</a>
+            HtmlToken::StartTag {
+                tag: "a".to_string(),
+                self_closing: false,
+                attributes: vec![href_attr1],
+            },
+            HtmlToken::Char('L'), HtmlToken::Char('i'), HtmlToken::Char('n'),
+            HtmlToken::Char('k'), HtmlToken::Char('1'),
+            HtmlToken::EndTag {
+                tag: "a".to_string(),
+            },
+            HtmlToken::Char('\n'),
+            HtmlToken::Char(' '),
+            HtmlToken::Char(' '),
+            HtmlToken::Char(' '),
+            HtmlToken::Char(' '),
+            // <a href="example.com">Link2</a>
+            HtmlToken::StartTag {
+                tag: "a".to_string(),
+                self_closing: false,
+                attributes: vec![href_attr2],
+            },
+            HtmlToken::Char('L'), HtmlToken::Char('i'), HtmlToken::Char('n'),
+            HtmlToken::Char('k'), HtmlToken::Char('2'),
+            HtmlToken::EndTag {
+                tag: "a".to_string(),
+            },
+            HtmlToken::Char('\n'),
+            HtmlToken::Char(' '),
+            HtmlToken::Char(' '),
+            // </p>
+            HtmlToken::EndTag {
+                tag: "p".to_string(),
+            },
+            HtmlToken::Char('\n'),
+            // </body>
+            HtmlToken::EndTag {
+                tag: "body".to_string(),
+            },
+            HtmlToken::Char('\n'),
+            // </html>
+            HtmlToken::EndTag {
+                tag: "html".to_string(),
+            },
+        ];
+
+        for expected in expected_tokens {
+            let actual = tokenizer.next();
+            assert_eq!(Some(expected), actual);
+        }
+    }
+
+    #[test]
+    fn test_mixed_self_closing_and_regular_tags() {
+        let html = r#"<div><img src="test.jpg" /><p>Text</p><br/></div>"#.to_string();
+        let mut tokenizer = HtmlTokenizer::new(html);
+        
+        // img src属性
+        let mut src_attr = Attribute::new();
+        src_attr.add_char('s', true);
+        src_attr.add_char('r', true);
+        src_attr.add_char('c', true);
+        src_attr.add_char('t', false);
+        src_attr.add_char('e', false);
+        src_attr.add_char('s', false);
+        src_attr.add_char('t', false);
+        src_attr.add_char('.', false);
+        src_attr.add_char('j', false);
+        src_attr.add_char('p', false);
+        src_attr.add_char('g', false);
+
+        let expected_tokens = vec![
+            // <div>
+            HtmlToken::StartTag {
+                tag: "div".to_string(),
+                self_closing: false,
+                attributes: Vec::new(),
+            },
+            // <img src="test.jpg" />
+            HtmlToken::StartTag {
+                tag: "img".to_string(),
+                self_closing: true,
+                attributes: vec![src_attr],
+            },
+            // <p>
+            HtmlToken::StartTag {
+                tag: "p".to_string(),
+                self_closing: false,
+                attributes: Vec::new(),
+            },
+            // Text
+            HtmlToken::Char('T'),
+            HtmlToken::Char('e'),
+            HtmlToken::Char('x'),
+            HtmlToken::Char('t'),
+            // </p>
+            HtmlToken::EndTag {
+                tag: "p".to_string(),
+            },
+            // <br/>
+            HtmlToken::StartTag {
+                tag: "br".to_string(),
+                self_closing: true,
+                attributes: Vec::new(),
+            },
+            // </div>
+            HtmlToken::EndTag {
+                tag: "div".to_string(),
+            },
+        ];
+
+        for expected in expected_tokens {
+            let actual = tokenizer.next();
+            assert_eq!(Some(expected), actual);
+        }
+    }
 }
