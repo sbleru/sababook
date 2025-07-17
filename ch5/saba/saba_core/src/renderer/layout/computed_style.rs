@@ -33,21 +33,23 @@ impl ComputedStyle {
     }
 
     pub fn defaulting(&mut self, node: &Rc<RefCell<Node>>, parent_style: Option<ComputedStyle>) {
-        // もし親ノードが存在し、親のCSSの値が初期値とは異なる場合、値を継承する
+        // 親ノードが存在する場合、継承可能なプロパティを継承する
         if let Some(parent_style) = parent_style {
+            // background-colorは継承されない（初期値と異なる場合のみ継承）
             if self.background_color.is_none() && parent_style.background_color() != Color::white()
             {
                 self.background_color = Some(parent_style.background_color());
             }
-            if self.color.is_none() && parent_style.color() != Color::black() {
+            // colorは継承される
+            if self.color.is_none() {
                 self.color = Some(parent_style.color());
             }
-            if self.font_size.is_none() && parent_style.font_size() != FontSize::Medium {
+            // font-sizeは継承される
+            if self.font_size.is_none() {
                 self.font_size = Some(parent_style.font_size());
             }
-            if self.text_decoration.is_none()
-                && parent_style.text_decoration() != TextDecoration::None
-            {
+            // text-decorationは継承される
+            if self.text_decoration.is_none() {
                 self.text_decoration = Some(parent_style.text_decoration());
             }
         }
