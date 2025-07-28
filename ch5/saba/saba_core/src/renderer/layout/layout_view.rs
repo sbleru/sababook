@@ -29,7 +29,7 @@ fn build_layout_tree(
             target_node = n.borrow().next_sibling().clone();
             layout_object = create_layout_object(&target_node, parent_obj, cssom);
         } else {
-            // もし兄弟ノードがない���合、処理するべきDOMツリーは終了したので、今まで
+            // もし兄弟ノードがない場合、処理するべきDOMツリーは終了したので、今まで
             // 作成したレイアウトツリーを返す
             return layout_object;
         }
@@ -228,6 +228,7 @@ mod tests {
     use crate::renderer::dom::node::NodeKind;
     use crate::renderer::html::parser::HtmlParser;
     use crate::renderer::html::token::HtmlTokenizer;
+    use crate::renderer::layout::computed_style::{Color, FontSize};
     use alloc::string::String;
     use alloc::vec::Vec;
 
@@ -369,4 +370,308 @@ mod tests {
             .next_sibling()
             .is_none());
     }
+
+    #[test]
+    fn test_background_color_by_name() {
+        let html = r#"<html>
+<head>
+<style>
+  body { background-color: red; }
+</style>
+</head>
+<body>test</body>
+</html>"#
+            .to_string();
+        let layout_view = create_layout_view(html);
+
+        let root = layout_view.root();
+        assert!(root.is_some());
+        
+        let style = root.expect("root should exist").borrow().style();
+        assert_eq!(
+            Color::from_name("red").unwrap(),
+            style.background_color()
+        );
+    }
+
+    #[test]
+    fn test_background_color_by_code() {
+        let html = r#"<html>
+<head>
+<style>
+  body { background-color: #ff0000; }
+</style>
+</head>
+<body>test</body>
+</html>"#
+            .to_string();
+        let layout_view = create_layout_view(html);
+
+        let root = layout_view.root();
+        assert!(root.is_some());
+        
+        let style = root.expect("root should exist").borrow().style();
+        assert_eq!(
+            Color::from_name("red").unwrap(),
+            style.background_color()
+        );
+    }
+
+    #[test]
+    fn test_text_color_by_name() {
+        let html = r#"<html>
+<head>
+<style>
+  body { color: blue; }
+</style>
+</head>
+<body>test</body>
+</html>"#
+            .to_string();
+        let layout_view = create_layout_view(html);
+
+        let root = layout_view.root();
+        assert!(root.is_some());
+        
+        let style = root.expect("root should exist").borrow().style();
+        assert_eq!(
+            Color::from_name("blue").unwrap(),
+            style.color()
+        );
+    }
+
+    #[test]
+    fn test_text_color_by_code() {
+        let html = r#"<html>
+<head>
+<style>
+  body { color: #0000ff; }
+</style>
+</head>
+<body>test</body>
+</html>"#
+            .to_string();
+        let layout_view = create_layout_view(html);
+
+        let root = layout_view.root();
+        assert!(root.is_some());
+        
+        let style = root.expect("root should exist").borrow().style();
+        assert_eq!(
+            Color::from_name("blue").unwrap(),
+            style.color()
+        );
+    }
+
+    #[test]
+    fn test_display_inline() {
+        let html = r#"<html>
+<head>
+<style>
+  p { display: inline; }
+</style>
+</head>
+<body><p>inline text</p></body>
+</html>"#
+            .to_string();
+        let layout_view = create_layout_view(html);
+
+        let root = layout_view.root();
+        assert!(root.is_some());
+        
+        let p = root.expect("root should exist").borrow().first_child();
+        assert!(p.is_some());
+        assert_eq!(
+            LayoutObjectKind::Inline,
+            p.expect("p node should exist").borrow().kind()
+        );
+    }
+
+    #[test]
+    fn test_display_block() {
+        let html = r#"<html>
+<head>
+<style>
+  a { display: block; }
+</style>
+</head>
+<body><a>block link</a></body>
+</html>"#
+            .to_string();
+        let layout_view = create_layout_view(html);
+
+        let root = layout_view.root();
+        assert!(root.is_some());
+        
+        let a = root.expect("root should exist").borrow().first_child();
+        assert!(a.is_some());
+        assert_eq!(
+            LayoutObjectKind::Block,
+            a.expect("a node should exist").borrow().kind()
+        );
+    }
+
+    #[test]
+    fn test_multiple_css_properties() {
+        let html = r#"<html>
+<head>
+<style>
+  .styled {
+    background-color: red;
+    color: white;
+    display: block;
+  }
+</style>
+</head>
+<body><p class="styled">styled text</p></body>
+</html>"#
+            .to_string();
+        let layout_view = create_layout_view(html);
+
+        let root = layout_view.root();
+        assert!(root.is_some());
+        
+        let p = root.expect("root should exist").borrow().first_child();
+        assert!(p.is_some());
+        let p_ref = p.expect("p should exist");
+        
+        // pはblock要素として設定されているはず
+        assert_eq!(LayoutObjectKind::Block, p_ref.borrow().kind());
+        
+        let style = p_ref.borrow().style();
+        assert_eq!(
+            Color::from_name("red").unwrap(),
+            style.background_color()
+        );
+        assert_eq!(
+            Color::white(),
+            style.color()
+        );
+    }
+
+    #[test]
+    fn test_id_selector() {
+        let html = r#"<html>
+<head>
+<style>
+  #special { background-color: green; }
+</style>
+</head>
+<body><p id="special">special paragraph</p></body>
+</html>"#
+            .to_string();
+        let layout_view = create_layout_view(html);
+
+        let root = layout_view.root();
+        assert!(root.is_some());
+        
+        let p = root.expect("root should exist").borrow().first_child();
+        assert!(p.is_some());
+        
+        let style = p.expect("p should exist").borrow().style();
+        assert_eq!(
+            Color::from_name("green").unwrap(),
+            style.background_color()
+        );
+    }
+
+    #[test]
+    fn test_type_selector() {
+        let html = r#"<html>
+<head>
+<style>
+  p { color: red; }
+  h1 { background-color: yellow; }
+</style>
+</head>
+<body>
+  <p>paragraph</p>
+  <h1>heading</h1>
+</body>
+</html>"#
+            .to_string();
+        let layout_view = create_layout_view(html);
+
+        let root = layout_view.root();
+        assert!(root.is_some());
+        
+        let p = root.clone().expect("root should exist").borrow().first_child();
+        assert!(p.is_some());
+        let p_style = p.expect("p should exist").borrow().style();
+        assert_eq!(
+            Color::from_name("red").unwrap(),
+            p_style.color()
+        );
+        
+        let h1 = root.expect("root should exist").borrow().first_child()
+            .expect("first child should exist").borrow().next_sibling();
+        assert!(h1.is_some());
+        let h1_style = h1.expect("h1 should exist").borrow().style();
+        assert_eq!(
+            Color::from_name("yellow").unwrap(),
+            h1_style.background_color()
+        );
+    }
+
+    #[test]
+    fn test_css_inheritance() {
+        let html = r#"<html>
+<head>
+<style>
+  body { color: blue; }
+</style>
+</head>
+<body>
+  <p>inherited text</p>
+  <h1>
+    <a>nested inherited text</a>
+  </h1>
+</body>
+</html>"#
+            .to_string();
+        let layout_view = create_layout_view(html);
+
+        let root = layout_view.root();
+        assert!(root.is_some());
+        
+        // bodyの色が青に設定されている
+        let body_style = root.clone().expect("root should exist").borrow().style();
+        assert_eq!(
+            Color::from_name("blue").unwrap(),
+            body_style.color()
+        );
+        
+        // このテストは継承が動作することを確認する簡単なテスト
+        // bodyの最初の要素（p）を取得して継承を確認
+        let first_element = root.clone().expect("root should exist").borrow().first_child();
+        assert!(first_element.is_some());
+        let first_style = first_element.as_ref().unwrap().borrow().style();
+        assert_eq!(
+            Color::from_name("blue").unwrap(),
+            first_style.color()
+        );
+    }
+
+//     #[test]
+//     fn test_default_font_sizes() {
+//         let html = r#"<html>
+// <head></head>
+// <body><h1>Heading 1</h1></body>
+// </html>"#
+//             .to_string();
+//         let layout_view = create_layout_view(html);
+
+//         let root = layout_view.root();
+//         assert!(root.is_some());
+        
+//         // bodyの最初の子要素（h1）を取得
+//         let h1 = root.expect("root should exist").borrow().first_child();
+//         assert!(h1.is_some());
+        
+//         let h1_ref = h1.expect("h1 should exist");
+//         let h1_style = h1_ref.borrow().style();
+        
+//         // h1要素のフォントサイズはXXLargeであることを確認
+//         assert_eq!(FontSize::XXLarge, h1_style.font_size());
+//     }
 }
