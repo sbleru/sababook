@@ -180,6 +180,7 @@ impl HtmlParser {
     }
 
     pub fn construct_tree(&mut self) -> Rc<RefCell<Window>> {
+        // ここで字句解析を実行する
         let mut token = self.t.next();
 
         while token.is_some() {
