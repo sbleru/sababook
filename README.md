@@ -15,3 +15,26 @@
 書籍で解説されていない実験的なコードや最新の変更は[saba](https://github.com/d0iasm/saba)リポジトリに存在します。
 
 もしプログラム中に問題を見つけた場合は、[Issues](https://github.com/d0iasm/sababook/issues)に報告をいただけると嬉しいです。
+
+## 環境構築
+
+Rustをインストールする
+
+```sh
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+QEMUをインストールする
+
+```sh
+brew install qemu
+```
+
+## 実行
+
+GUIを立ち上げるプロジェクトの場合
+
+```sh
+cd ch6/saba
+export DISPLAY=0 && ./run_on_wasabi.sh
+```

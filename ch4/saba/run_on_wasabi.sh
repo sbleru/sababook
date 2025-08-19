@@ -38,8 +38,17 @@ cd $HOME_PATH
 # Makefileをダウンロードする
 if [ ! -f $MAKEFILE_PATH ]; then
   echo "downloading Makefile..."
-  # wget https://raw.githubusercontent.com/hikalium/wasabi/for_saba/external_app_template/Makefile
-  curl -O https://raw.githubusercontent.com/hikalium/wasabi/for_saba/external_app_template/Makefile
+  MAKEFILE_URL="https://raw.githubusercontent.com/hikalium/wasabi/for_saba/external_app_template/Makefile"
+  
+  # wgetまたはcurlを利用する
+  if command -v wget >/dev/null 2>&1; then
+    wget $MAKEFILE_URL
+  elif command -v curl >/dev/null 2>&1; then
+    curl -O $MAKEFILE_URL
+  else
+    echo "Error: Neither wget nor curl is available. Please install one of them."
+    exit 1
+  fi
 fi
 
 make build
