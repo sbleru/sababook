@@ -13,9 +13,6 @@
 - Docker環境でSaBaブラウザを実行するためのスクリプト
 - 各章のブラウザを簡単に起動できる
 
-### supervisord.conf
-- VNC、fluxbox、noVNCを管理するためのsupervisor設定ファイル
-- 現在は使用されていませんが、将来的な拡張のために保持
 
 ## 使用方法
 

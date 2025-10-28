@@ -22,7 +22,6 @@ RUN apt-get update && apt-get install -y \
     tigervnc-common \
     fluxbox \
     xterm \
-    supervisor \
     python3 \
     python3-pip \
     python3-numpy \
@@ -46,8 +45,6 @@ RUN mkdir -p /root/.vnc \
     && echo "saba123" | vncpasswd -f > /root/.vnc/passwd \
     && chmod 600 /root/.vnc/passwd
 
-# supervisorの設定ファイルをコピー
-COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # entrypointスクリプトをコピー
 COPY docker/entrypoint.sh /entrypoint.sh
