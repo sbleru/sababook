@@ -18,6 +18,22 @@
 
 ## 環境構築
 
+### Docker環境（推奨）
+
+OS環境に依存しない統一された開発環境を提供します。
+
+```sh
+# Docker Desktopをインストール後
+docker-compose build
+docker-compose up -d
+
+# ブラウザで http://localhost:6080 にアクセス
+```
+
+詳細は [Docker環境セットアップガイド](./docs/DOCKER_SETUP.md) をご覧ください。
+
+### ネイティブ環境
+
 Rustをインストールする
 
 ```sh
@@ -31,6 +47,18 @@ brew install qemu
 ```
 
 ## 実行
+
+### Docker環境での実行
+
+```sh
+# コンテナ内でシェルを起動
+docker-compose exec saba-dev bash
+
+# 各章のブラウザを実行
+./docker/run_docker.sh ch6/saba
+```
+
+### ネイティブ環境での実行
 
 GUIを立ち上げるプロジェクトの場合
 
