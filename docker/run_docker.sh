@@ -38,8 +38,13 @@ fi
 # WasabiOSをダウンロードする
 if [ -d "$OS_PATH" ]; then
     echo "$OS_PATH exists"
-    echo "pulling new changes..."
     cd "$OS_PATH"
+    
+    # Docker環境対応のためHTTPS URLに設定
+    echo "Setting remote URL to HTTPS..."
+    git remote set-url origin https://github.com/hikalium/wasabi.git
+    
+    echo "pulling new changes..."
     git pull origin for_saba
 else
     echo "$OS_PATH doesn't exist"
