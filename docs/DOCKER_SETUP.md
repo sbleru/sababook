@@ -31,7 +31,7 @@ cd sababook
 ### 2. Dockerイメージのビルド
 
 ```bash
-docker-compose build
+docker compose build
 ```
 
 初回ビルドには10-15分程度かかります。
@@ -39,7 +39,7 @@ docker-compose build
 ### 3. コンテナの起動
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 ### 4. GUI環境へのアクセス
@@ -58,7 +58,7 @@ VNCパスワードを求められた場合は `saba123` を入力してくださ
 
 ```bash
 # コンテナ内のシェルに接続
-docker-compose exec saba-dev bash
+docker compose exec saba-dev bash
 
 # 各章のSaBaブラウザを実行
 ./docker/run_docker.sh ch6/saba  # 第6章のブラウザ
@@ -86,8 +86,8 @@ docker-compose exec saba-dev bash
 ### Q: ブラウザで http://localhost:6080 にアクセスできない
 
 **A**: 以下を確認してください：
-- コンテナが正常に起動しているか: `docker-compose ps`
-- ポートが正しく公開されているか: `docker-compose logs saba-dev`
+- コンテナが正常に起動しているか: `docker compose ps`
+- ポートが正しく公開されているか: `docker compose logs saba-dev`
 - ファイアウォールがポート6080をブロックしていないか
 
 ### Q: VNC画面が表示されない
@@ -95,16 +95,16 @@ docker-compose exec saba-dev bash
 **A**: 以下を試してください：
 ```bash
 # コンテナを再起動
-docker-compose restart
+docker compose restart
 
 # ログを確認
-docker-compose logs saba-dev
+docker compose logs saba-dev
 ```
 
 ### Q: QEMUが起動しない
 
 **A**: 以下を確認してください：
-- コンテナが特権モードで実行されているか（docker-compose.ymlで設定済み）
+- コンテナが特権モードで実行されているか（compose.ymlで設定済み）
 - 十分なメモリが割り当てられているか
 
 ### Q: ビルドが失敗する
@@ -112,7 +112,7 @@ docker-compose logs saba-dev
 **A**: 以下を試してください：
 ```bash
 # キャッシュをクリアして再ビルド
-docker-compose build --no-cache
+docker compose build --no-cache
 
 # 古いイメージとコンテナを削除
 docker system prune -a
@@ -130,25 +130,25 @@ docker system prune -a
 ### コンテナの停止
 
 ```bash
-docker-compose down
+docker compose down
 ```
 
 ### コンテナの再起動
 
 ```bash
-docker-compose restart
+docker compose restart
 ```
 
 ### ログの確認
 
 ```bash
-docker-compose logs saba-dev
+docker compose logs saba-dev
 ```
 
 ### コンテナ内のシェルに接続
 
 ```bash
-docker-compose exec saba-dev bash
+docker compose exec saba-dev bash
 ```
 
 ## トラブルシューティング
@@ -159,14 +159,14 @@ docker-compose exec saba-dev bash
 
 ```bash
 # コンテナとボリュームを削除
-docker-compose down -v
+docker compose down -v
 
 # イメージを削除
 docker rmi sababook-saba-dev
 
 # 再ビルド
-docker-compose build
-docker-compose up -d
+docker compose build
+docker compose up -d
 ```
 
 ### パフォーマンス最適化
@@ -194,7 +194,7 @@ Docker Desktopの設定で以下を調整してください：
 1. 使用しているOS
 2. Docker Desktopのバージョン
 3. エラーメッセージ
-4. `docker-compose logs saba-dev` の出力
+4. `docker compose logs saba-dev` の出力
 
 ## 次のステップ
 

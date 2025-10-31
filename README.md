@@ -24,13 +24,18 @@ OS環境に依存しない統一された開発環境を提供します。
 
 ```sh
 # Docker Desktopをインストール後
-docker-compose build
-docker-compose up -d
+docker compose build
+docker compose up -d
 
 # ブラウザで http://localhost:6080 にアクセス
 ```
 
 詳細は [Docker環境セットアップガイド](./docs/DOCKER_SETUP.md) をご覧ください。
+
+```sh
+# コンテナを削除
+docker compose down
+```
 
 ### ネイティブ環境
 
@@ -52,7 +57,7 @@ brew install qemu
 
 ```sh
 # コンテナ内でシェルを起動
-docker-compose exec saba-dev bash
+docker compose exec saba-dev bash
 
 # 各章のブラウザを実行
 ./docker/run_docker.sh ch6/saba

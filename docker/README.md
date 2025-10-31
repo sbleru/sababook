@@ -65,8 +65,8 @@ chmod +x docker/entrypoint.sh
 
 ```bash
 # コンテナのログを確認
-docker-compose logs saba-dev
+docker compose logs saba-dev
 
 # コンテナを再起動
-docker-compose restart
+docker compose restart
 ```
