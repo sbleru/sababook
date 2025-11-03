@@ -60,7 +60,7 @@ brew install qemu
 docker compose exec saba-dev bash
 
 # 各章のブラウザを実行
-./docker/run_docker.sh ch6/saba
+./docker/run_on_docker.sh ch6/saba
 ```
 
 ### ネイティブ環境での実行

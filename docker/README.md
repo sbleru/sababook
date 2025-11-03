@@ -9,7 +9,7 @@
 - VNCサーバーとnoVNCを起動
 - GUI環境を初期化
 
-### run_docker.sh
+### run_on_docker.sh
 - Docker環境でSaBaブラウザを実行するためのスクリプト
 - 各章のブラウザを簡単に起動できる
 
@@ -20,13 +20,13 @@
 
 ```bash
 # コンテナ内で実行
-./docker/run_docker.sh <章のディレクトリ>
+./docker/run_on_docker.sh <章のディレクトリ>
 
 # 例：第6章のブラウザを実行
-./docker/run_docker.sh ch6/saba
+./docker/run_on_docker.sh ch6/saba
 
 # 例：第7章のブラウザを実行
-./docker/run_docker.sh ch7/saba
+./docker/run_on_docker.sh ch7/saba
 ```
 
 ### 利用可能な章
@@ -57,7 +57,7 @@
 
 ```bash
 # 実行権限を確認・付与
-chmod +x docker/run_docker.sh
+chmod +x docker/run_on_docker.sh
 chmod +x docker/entrypoint.sh
 ```
 

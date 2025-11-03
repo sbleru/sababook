@@ -24,7 +24,7 @@
 ### 1. リポジトリのクローン
 
 ```bash
-git clone https://github.com/d0iasm/sababook.git
+git clone https://github.com/sbleru/sababook
 cd sababook
 ```
 
@@ -61,8 +61,8 @@ VNCパスワードを求められた場合は `saba123` を入力してくださ
 docker compose exec saba-dev bash
 
 # 各章のSaBaブラウザを実行
-./docker/run_docker.sh ch6/saba  # 第6章のブラウザ
-./docker/run_docker.sh ch7/saba  # 第7章のブラウザ
+./docker/run_on_docker.sh ch6/saba  # 第6章のブラウザ
+./docker/run_on_docker.sh ch7/saba  # 第7章のブラウザ
 ```
 
 ### 利用可能な章
