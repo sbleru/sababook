@@ -16,6 +16,31 @@
 
 もしプログラム中に問題を見つけた場合は、[Issues](https://github.com/d0iasm/sababook/issues)に報告をいただけると嬉しいです。
 
+# Getting Started
+
+```sh
+git clone https://github.com/sbleru/sababook
+cd sababook
+docker compose build
+docker compose up -d
+
+# ブラウザで http://localhost:6080 にアクセスし、「接続」ボタンを押す
+
+# コンテナ内のシェルに接続
+docker compose exec saba-dev bash
+
+# コンテナ内で各章のブラウザを実行（ここでは7章を指定）
+root@xxx:/workspace# ./docker/run_on_docker.sh ch7/saba
+
+# saba を入力
+
+# ブラウザに戻る
+
+python3 -m http.server 8000 -d ch7/saba & pid=$!; trap "kill $pid" INT; ./docker/run_on_docker.sh ch7/saba; kill $pid
+
+# http://host.test:8000/test.html にアクセス
+```
+
 ## 環境構築
 
 ### Docker環境（推奨）
