@@ -7,7 +7,6 @@ services:
       - .:/workspace
       # Cargoキャッシュの永続化
       - cargo-cache:/root/.cargo/registry
-      - cargo-target-cache:/workspace/target
     ports:
       # VNCポート
       - "5900:5900"
@@ -24,4 +23,3 @@ services:
 
 volumes:
   cargo-cache:
-  cargo-target-cache:
