@@ -1,4 +1,4 @@
-# SaBaブラウザ開発環境
+# SaBA開発環境
 FROM ubuntu:22.04
 
 # 非対話的インストールのための環境変数
@@ -45,7 +45,6 @@ RUN mkdir -p /root/.vnc \
     && echo "saba123" | vncpasswd -f > /root/.vnc/passwd \
     && chmod 600 /root/.vnc/passwd
 
-
 # entrypointスクリプトをコピー
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
@@ -59,4 +58,3 @@ EXPOSE 5900 6080
 # entrypointの設定
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/bin/bash"]
-
