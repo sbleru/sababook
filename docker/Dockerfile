@@ -47,7 +47,7 @@ RUN mkdir -p /root/.vnc \
 
 
 # entrypointスクリプトをコピー
-COPY docker/entrypoint.sh /entrypoint.sh
+COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 # 作業ディレクトリの設定
@@ -59,3 +59,4 @@ EXPOSE 5900 6080
 # entrypointの設定
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/bin/bash"]
+

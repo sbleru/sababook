@@ -1,6 +1,6 @@
 services:
   saba-dev:
-    build: .
+    build: docker
     container_name: saba-browser-dev
     volumes:
       # ソースコードのマウント
