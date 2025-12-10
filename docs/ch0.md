@@ -1,6 +1,6 @@
 # 本書を読む前の準備
 
-[作って学ぶ　ブラウザのしくみ　書き起こし](https://chatgpt.com/c/67abd434-e58c-8011-920a-439ed15ac365)
+※本文は、『[［作って学ぶ］ブラウザのしくみ──HTTP、HTML、CSS、JavaScriptの裏側](https://amzn.asia/d/dcEmU3E)』のサンプル部分を文字起こししたものです。
 
 ## 環境構築
 
