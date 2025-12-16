@@ -11,6 +11,13 @@ cd sababook
 
 ## Dockerで立ち上げる場合
 
+最終ゴール
+![最終ゴール](docs/result.png)
+
+デモ動画
+https://youtu.be/yObiqurYELY
+
+
 1. Dockerコンテナを立ち上げる
 
 ```sh
@@ -40,9 +47,10 @@ python3 -m http.server 8000 -d ch7/saba & pid=$!; trap "kill $pid" INT; ./docker
 saba
 ```
 
-6. 2.のブラウザに戻り、表示されているブラウザアプリケーションのAddressバーを選択し、「http://host.test:8000/test.html」を入力してEnterを押す
+6. 2.のブラウザに戻り、表示されているブラウザアプリケーションのAddressバーを選択し、「`http://host.test:8000/test.html`」を入力してEnterを押す
 
 7. ブラウザアプリケーションのページが表示される
+最終ゴールのような表示がされる
 
 ## MacOSで立ち上げる場合
 
@@ -71,6 +79,6 @@ python3 -m http.server 8000 & export DISPLAY=0 && ./run_on_wasabi.sh
 saba
 ```
 
-6. 起動したブラウザアプリケーションのAddressバーを選択し、「http://host.test:8000/test.html」を入力してEnterを押す
+6. 起動したブラウザアプリケーションのAddressバーを選択し、「`http://host.test:8000/test.html`」を入力してEnterを押す
 
 7. ブラウザアプリケーションのページが表示される
